@@ -21,7 +21,7 @@
 - name: create user zabbix
   user:
     name: zabbix
-    groups: zabbix
+    group: zabbix
     shell: /usr/sbin/nologin
     home: /var/lib/zabbix
     system: yes
@@ -47,6 +47,13 @@
   file:
     path: /etc/zabbix/zabbix_agent2.d
     state: directory
+
+- name: zabbix-agent25
+  file:
+    path: /var/run/zabbix
+    state: directory
+    owner: zabbix
+    group: zabbix
 
 - name: download app-agent
   include_role:
@@ -87,7 +94,7 @@
 - name: create user caddy
   user:
     name: caddy
-    groups: caddy
+    group: caddy
     shell: /usr/sbin/nologin
     home: /var/lib/caddy
     system: yes
