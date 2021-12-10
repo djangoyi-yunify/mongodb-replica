@@ -48,13 +48,6 @@
     path: /etc/zabbix/zabbix_agent2.d
     state: directory
 
-- name: zabbix-agent25
-  file:
-    path: /var/run/zabbix
-    state: directory
-    owner: zabbix
-    group: zabbix
-
 - name: download app-agent
   include_role:
     name: install-1.0.6
