@@ -170,9 +170,9 @@
         {
           "key": "fcv",
           "label": "Feature compatibility version",
-          "description": "if you upgrade your cluster from 3.4 to current version, fcv remains 3.4. Please test your server&client thoroughly before changing fcv to 3.6!",
+          "description": "if you upgrade your cluster from 3.6 to current version, fcv remains 3.6. Please test your server&client thoroughly before changing fcv to 4.0!",
           "default": "3.6",
-          "range": ["3.4", "3.6"],
+          "range": ["3.6","4.0"],
           "type": "string",
           "required": "yes"
         }
@@ -206,7 +206,7 @@
         {
           "key": "conf.monitor.userPass",
           "label": "User qc_monitor's Password",
-          "description": "User qc_master is Used for zabbix and mongodb_exporter monitoring. Must contain a combination of uppercase and lowercase letters and numbers, special characters can be used (including @#%&*()_+-=), and the length is between 8-32",
+          "description": "User qc_monitor is Used for zabbix and mongodb_exporter monitoring. Must contain a combination of uppercase and lowercase letters and numbers, special characters can be used (including @#%&*()_+-=), and the length is between 8-32",
           "type": "password",
           "pattern": "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z@#\\%\\&\\*\\(\\)\\_\\+\\-\\=]{8,32}$",
           "default": "Change1Pwd",

@@ -83,18 +83,34 @@ checkDiskUsage() {
   return 0
 }
 
+checkFvc() {
+  # the version should be 3.6 or 4.0
+  local jsstr="JSON.stringify(db.adminCommand({getParameter:1,featureCompatibilityVersion:1}))"
+  local res=$(runMongoCmd "$jsstr" -P $NET_MAINTAIN_PORT)
+  log "res=$res"
+  res=$(echo "$res" | jq '.featureCompatibilityVersion.version' | sed 's/"//g')
+  log "res=$res"
+  if [ $res = "3.6" ] || [ $res = "4.0" ]; then
+    return 0
+  fi
+  return 1
+}
+
 upgrade() {
+  # check disk usage
   log "check disk usage"
   if ! checkDiskUsage; then
     log "Not enough disk space"
     return $ERR_UPGRADE_DISK_SPACE
   fi
+
   log "upgrade: init folders and files"
   clusterPreInit
-  mkdir -p /data/upback34 && cp /data/pitrix.pwd /data/mongod_env /data/upback34 || :
-  cp /opt/app/current/bin/node/rollback.sh /data/upback34
+
+  mkdir -p /data/upback && cp -rf /data/pitrix.pwd /data/appctl /data/info /data/upback || :
   rm -rf /data/mongodb-data
   ln -s /data/mongodb /data/mongodb-data
+
   # updat conf files
   updateHostsInfo
   updateMongoConf
@@ -103,7 +119,16 @@ upgrade() {
     log "Can not start mongod in admin mode"
     return $ERR_UPGRADE_MODE_START
   fi
+
   retry 60 3 0 msGetHostDbVersion -P $NET_MAINTAIN_PORT
+
+  # checkFcv
+  log "check Fvc"
+  if ! checkFvc; then
+    log "Error with the version"
+    return $ERR_UPGRADE_VERSION
+  fi
+
   # change qc_master's password
   if ! msModifyLocalSysUser; then
     log "Can not modify qc_master's password"
